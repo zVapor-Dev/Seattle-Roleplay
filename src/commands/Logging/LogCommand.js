@@ -137,7 +137,14 @@ So the options is basically the Arguments for the command
 
 module.exports = class LogCommand extends BaseCommand {
   constructor() {
-    super("log", "Logging", false, 0, "Manage a user punishment.", slashCommandOptions);
+    super(
+      "log",
+      "Logging",
+      false,
+      0,
+      "Manage a user punishment.",
+      slashCommandOptions
+    );
   }
 
   async run(client, interaction, args) {
@@ -159,7 +166,7 @@ module.exports = class LogCommand extends BaseCommand {
         .addField("Staff", `<@${staffMember}>`)
         .addField("Notes", `${notes}`)
         .setTimestamp()
-        .setColor("RED");
+        .setColor(`#446ac2`);
 
       interaction.reply({ embeds: [replyEmbed] });
 
@@ -220,10 +227,10 @@ module.exports = class LogCommand extends BaseCommand {
                   log.notes
                 }\n**Staff Member**: <@${log.staffId}>\n`
             );
-            
-            const embed = new Discord.MessageEmbed().setDescription(
-              `${e.join(" ") || "No punishments found"}`
-            );
+
+            const embed = new Discord.MessageEmbed()
+              .setColor(`#446ac2`)
+              .setDescription(`${e.join(" ") || "No punishments found"}`);
             interaction.reply({
               embeds: [embed],
               content: `Here is the file of ${user}`,
@@ -235,7 +242,7 @@ module.exports = class LogCommand extends BaseCommand {
             const newData = new logSchema({
               username: user,
               guildId: interaction.guild.id,
-              content: []
+              content: [],
             });
             newData.save();
           }
