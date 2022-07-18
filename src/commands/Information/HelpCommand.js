@@ -9,11 +9,6 @@ var slashCommandOptions = [
     description: "View all the Internal Affairs commands.",
   },
   {
-    name: "ssu",
-    type: Discord.Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
-    description: "View all the SSU commands.",
-  },
-  {
     name: "logging",
     type: Discord.Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
     description: "View all the ingame logging commands.",
@@ -61,7 +56,9 @@ module.exports = class HelpCommand extends BaseCommand {
       return interaction.reply({
         embeds: [
           new Discord.MessageEmbed()
-            .setTitle(`${client.user.username} - **Help menu** - User Logging Commands`)
+            .setTitle(
+              `${client.user.username} - **Help menu** - User Logging Commands`
+            )
             .addFields([
               {
                 name: "`/log add` - <roblox user> <action> <reason> [notes]",
@@ -109,30 +106,6 @@ module.exports = class HelpCommand extends BaseCommand {
                 name: "`/staff-punishment clear` - <user @>",
                 value: "Clear a staff file",
               },
-            ])
-        ],
-      });
-    } else if (subCommand === "ssu") {
-      return interaction.reply({
-        embeds: [
-          new Discord.MessageEmbed()
-            .setTitle(`${client.user.username} - **Help menu** - SSU Commands`)
-            .addFields([
-              {
-                name: "`/ssu start`",
-                value: "Starts the SSU & enables reminders for staff",
-              },
-              {
-                name: "`/ssu stop`",
-                value: "Stops the SSU and clears the SSU channels",
-              },
-              {
-                name: "`/ssu extend`",
-                value:
-                  "If the reminders have stopped resume them with this command",
-              },
-              { name: "`/ssu boost`", value: "Request a boost in the server!" },
-              { name: "`/ssu poll`", value: "Start a poll for hosting a SSU!" },
             ]),
         ],
       });
