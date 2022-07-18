@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^13.6.0",
+    "moment": "^2.29.4",
     "mongoose": "^5.13.3"
   },
   "devDependencies": {

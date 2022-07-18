@@ -1,7 +1,7 @@
 const BaseCommand = require("../../utils/structures/BaseCommand");
 const Discord = require("discord.js");
-const config = require("../../../config.json");
 const logSchema = require("../../schemas/log-schema");
+var moment = require("moment");
 
 var slashCommandOptions = [
   {
@@ -21,36 +21,16 @@ var slashCommandOptions = [
         type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
         choices: [
           {
-            name: "Verbal warn 1",
-            value: "Verbal warn 1",
+            name: "Verbal warn",
+            value: "Verbal warn",
           },
           {
-            name: "Verbal warn 2",
-            value: "Verbal warn 2",
+            name: "Warn",
+            value: "Warn",
           },
           {
-            name: "Warn 1",
-            value: "Warn 1",
-          },
-          {
-            name: "Warn 2",
-            value: "Warn 2",
-          },
-          {
-            name: "Warn 3",
-            value: "Warn 3",
-          },
-          {
-            name: "Kick 1",
-            value: "Kick 1",
-          },
-          {
-            name: "Kick 2",
-            value: "Kick 2",
-          },
-          {
-            name: "Kick 3",
-            value: "Kick 3",
+            name: "Kick",
+            value: "Kick",
           },
           {
             name: "Ban",
@@ -154,19 +134,54 @@ module.exports = class LogCommand extends BaseCommand {
     let notes = interaction.options.getString("notes");
     const action = interaction.options.getString("action");
     const logNumber = interaction.options.getInteger("log-number") - 1;
-    const staffMember = interaction.user.id;
+    const staffMember = interaction.user;
     if (!notes) notes = "No notes provided";
+
+    const guildMember = interaction.guild.members.cache.get(staffMember.id);
+    if (!guildMember.roles.cache.has(`957078158400704562`))
+      return message.reply(
+        `You do not have permission to execute this command. You must be a staff member to use this command.`
+      );
 
     if (subCommand === "add") {
       const replyEmbed = new Discord.MessageEmbed()
-        .setTitle(`New user log created.`)
-        .addField("User", `${user}`)
-        .addField("Reason", `${reason}`)
-        .addField("Action", `${action}`)
-        .addField("Staff", `<@${staffMember}>`)
-        .addField("Notes", `${notes}`)
-        .setTimestamp()
-        .setColor(`#446ac2`);
+        .setTitle("Punishment Added: " + `${staffMember.tag}`)
+        .setDescription(
+          `<:online:996129575719415848> ${staffMember} |  \`${
+            moment().format().split("-")[2].split("T")[0] +
+            "/" +
+            moment().format().split("-")[1] +
+            "/" +
+            moment().format().split("-")[0] +
+            " | " +
+            moment().format().split("T")[1]
+          }\``
+        )
+        .addFields(
+          {
+            name: "◉ Username:",
+            value: `<:icons_text1:986426740144496720> ${user}`,
+          },
+          {
+            name: "◉ Action:",
+            value: `<:icons_text1:986426740144496720> ${action}`,
+          },
+          {
+            name: "◉ Reason:",
+            value: `<:icons_text1:986426740144496720> ${reason}`,
+          },
+          {
+            name: "◉ Notes (if any):",
+            value: `<:icons_text1:986426740144496720> ${notes}`,
+          }
+        )
+        .setThumbnail(staffMember.displayAvatarURL({ dynamic: true }))
+        .setFooter({
+          text: `${staffMember.id}`,
+          iconURL: staffMember.displayAvatarURL({ dynamic: true }),
+        })
+        .setColor(`#446ac2`)
+        .setTimestamp();
 
       interaction.reply({ embeds: [replyEmbed] });
 
@@ -180,7 +195,7 @@ module.exports = class LogCommand extends BaseCommand {
             if (err) throw err;
             if (!data) {
               data = new logSchema({
-                username: user,
+                username: user.toLowerCase(),
                 guildId: interaction.guild.id,
                 content: [
                   {
@@ -221,16 +236,16 @@ module.exports = class LogCommand extends BaseCommand {
           if (data) {
             const e = data.content.map(
               (log, id) =>
-                `\n**ID**: ${id + 1}\n**Username**: ${user}\n**Action**: ${
+                `\n**ID**: ${id + 1}\n**◉ Username**: ${user}\n**<:icons_text1:986426740144496720> Action**: ${
                   log.action
-                }\n**Reason**: ${log.reason}\n**Notes**: ${
+                }\n**<:icons_text1:986426740144496720> Reason**: ${log.reason}\n**<:icons_text1:986426740144496720> Notes**: ${
                   log.notes
-                }\n**Staff Member**: <@${log.staffId}>\n`
+                }\n**<:icons_text1:986426740144496720> Staff Member**: <@${log.staffId}>\n`
             );
 
             const embed = new Discord.MessageEmbed()
               .setColor(`#446ac2`)
-              .setDescription(`${e.join(" ") || "No punishments found"}`);
+              .setDescription(`${e.join(" ") + "<:line_bg:967182042808869014><:line_bg:967182042808869014><:line_bg:967182042808869014><:line_bg:967182042808869014><:line_bg:967182042808869014><:line_bg:967182042808869014><:line_bg:967182042808869014>" || "No punishments found"}`);
             interaction.reply({
               embeds: [embed],
               content: `Here is the file of ${user}`,
@@ -255,7 +270,7 @@ module.exports = class LogCommand extends BaseCommand {
       logSchema.findOne(
         {
           guildId: interaction.guild.id,
-          username: user,
+          username: user.toLowerCase(),
         },
         async (err, data) => {
           if (err) throw err;
@@ -279,14 +294,14 @@ module.exports = class LogCommand extends BaseCommand {
       logSchema.findOne(
         {
           guildId: interaction.guild.id,
-          username: user,
+          username: user.toLowerCase(),
         },
         async (err, data) => {
           if (err) throw err;
           if (data) {
             await logSchema.findOneAndDelete({
               guildId: interaction.guild.id,
-              username: user,
+              username: user.toLowerCase(),
             });
             interaction.reply(
               `Ok. Your wish is my command! All punishments deleted from this member!`
