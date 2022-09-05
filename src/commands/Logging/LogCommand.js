@@ -145,7 +145,11 @@ module.exports = class LogCommand extends BaseCommand {
 
     if (subCommand === "add") {
       const replyEmbed = new Discord.MessageEmbed()
+<<<<<<< Updated upstream
         .setTitle("Punishment Added: " + `${staffMember.tag}`)
+=======
+        .setTitle("Punishment Added: " + `${staffMember}`)
+>>>>>>> Stashed changes
         .setDescription(
           `<:online:996129575719415848> ${staffMember} |  \`${
             moment().format().split("-")[2].split("T")[0] +
@@ -157,6 +161,7 @@ module.exports = class LogCommand extends BaseCommand {
             moment().format().split("T")[1]
           }\``
         )
+<<<<<<< Updated upstream
         .addFields(
           {
             name: "◉ Username:",
@@ -175,6 +180,8 @@ module.exports = class LogCommand extends BaseCommand {
             value: `<:icons_text1:986426740144496720> ${notes}`,
           }
         )
+=======
+>>>>>>> Stashed changes
         .setThumbnail(staffMember.displayAvatarURL({ dynamic: true }))
         .setFooter({
           text: `${staffMember.id}`,
